@@ -1,9 +1,9 @@
 // Book Class : Represent a Book
 class Book {
-	constructor(title, author, isbn) {
+	constructor(title, author, description) {
 		this.title = title;
 		this.author = author;
-		this.isbn = isbn;
+		this.description = description;
 	}
 }
 // UI Class : Handle UI Tasks
@@ -20,21 +20,26 @@ class UI {
 		row.innerHTML = `
         <td>${book.title}</td>
         <td>${book.author}</td>
-        <td>${book.isbn}</td>
+        <td>${book.description}</td>
         <td><a href="#" class="btn btn-danger btn-sm delete">X</a></td>
         `;
 		list.appendChild(row);
 	}
+
+	// to clear the input fields after clicking the submit button
 	static clearFeilds() {
 		document.querySelector('#title').value = '';
 		document.querySelector('#author').value = '';
-		document.querySelector('#ISBN').value = '';
+		document.querySelector('#description').value = '';
 	}
+
+	// delete the book whose button is clicked
 	static deleteBook(el) {
 		if (el.classList.contains('delete')) {
 			el.parentElement.parentElement.remove();
 		}
 	}
+	// show alert message on successful deletion / addition of a Book.
 	static showAlert(message, className) {
 		const div = document.createElement('div');
 		div.className = `alert alert-${className}`;
@@ -55,6 +60,7 @@ class Store {
 		}
 		else {
 			books = JSON.parse(localStorage.getItem('books'));
+			console.log(books)
 		}
 		return books;
 	}
@@ -83,21 +89,22 @@ document.querySelector('#book-form').addEventListener('submit', (e) => {
 	// Get form values
 	const title = document.querySelector('#title').value;
 	const author = document.querySelector('#author').value;
-	let isbn = document.querySelector('#ISBN').value;
-	if (isbn === '')
-		isbn = '---';
+	const description = document.querySelector('#description').value;
+	if (description=== '')
+		description = '---';
 	// Validate
 	if (title === '' || author === '') {
 		UI.showAlert("Please enter the required fields!!", 'danger');
 	}
 	else {
 		// Instantiate Book
-		const book = new Book(title, author, isbn);
+		const book = new Book(title, author, description);
 		// Add Book to UI
 		UI.addBookToList(book);
 		// Add book to store
 		Store.addBook(book);
 		// Show success message
+	
 		UI.showAlert('Book Added', 'success');
 		// Clear Fields
 		UI.clearFeilds();
@@ -110,7 +117,10 @@ document.querySelector('#book-form').addEventListener('submit', (e) => {
 document.querySelector('#book-list').addEventListener('click', (e) => {
 	// Remove Book from UI
 	UI.deleteBook(e.target);
-	UI.showAlert('Book Removed', 'primary');
+	if (e.target.classList.contains('btn'))
+	{
+		UI.showAlert('Book Removed', 'primary');
+	}
 	// Remove Book from Store
 	Store.removeBook(e.target.parentElement.previousElementSibling.previousElementSibling.previousElementSibling.textContent);
 });
