@@ -89,7 +89,7 @@ document.querySelector('#book-form').addEventListener('submit', (e) => {
 	// Get form values
 	const title = document.querySelector('#title').value;
 	const author = document.querySelector('#author').value;
-	const description = document.querySelector('#description').value;
+	let description = document.querySelector('#description').value;
 	if (description=== '')
 		description = '---';
 	// Validate
